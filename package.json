@@ -1,0 +1,36 @@
+{
+  "name": "vue3-driver",
+  "private": true,
+  "version": "0.0.1",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/vue3-driver.umd.js",
+  "module": "./dist/vue3-driver.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/vue3-driver.es.js",
+      "require": "./dist/vue3-driver.umd.js"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.2.25"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.33",
+    "@vitejs/plugin-vue": "^2.3.3",
+    "add": "^2.0.6",
+    "autoprefixer": "^10.4.7",
+    "postcss": "^8.4.13",
+    "sass": "^1.51.0",
+    "tailwindcss": "^3.0.24",
+    "typescript": "^4.5.4",
+    "vite": "^2.9.9",
+    "vue-tsc": "^0.34.7"
+  }
+}
