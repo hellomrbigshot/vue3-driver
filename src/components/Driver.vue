@@ -18,7 +18,7 @@ const showDriver = ref(false)
 
 let replaceElement: Node | null = null
 let overlayElement: Node | null = null
-let currentElement: Node | null = null
+let currentElement: HTMLElement | null = null
 const positionInfo = computed(() => {
   if (!currentStep.value) return null
   currentElement = document.querySelector(currentStep.value.element)
@@ -28,12 +28,14 @@ const positionInfo = computed(() => {
     (replaceElement as HTMLElement).removeAttribute('id')
     
     // 计算选中元素相对于屏幕的位置和元素大小
-    const elementRect = (currentElement as HTMLElement).getBoundingClientRect()
-
-    const width = elementRect.width
-    const height = elementRect.height
-    const top = elementRect.top
-    const left = elementRect.left;
+    const { width, height, top, left } = currentElement.getBoundingClientRect()
+    currentElement.dataset.oldWidth = currentElement.style.width
+    currentElement.dataset.oldHeight = currentElement.style.height
+    currentElement.dataset.oldTop = currentElement.style.top
+    currentElement.dataset.oldLeft = currentElement.style.left
+    currentElement.dataset.oldRight = currentElement.style.right
+    currentElement.dataset.oldBottom = currentElement.style.bottom
+    currentElement.dataset.oldBoxSizing = currentElement.style.boxSizing
 
     // 选中元素上添加透明遮罩，防止触发事件
     overlayElement = document.createElement('div');
@@ -44,12 +46,13 @@ const positionInfo = computed(() => {
     (overlayElement as HTMLElement).style.left = `${left}px`;
 
     // 选中元素改变样式
-    (currentElement as HTMLElement).setAttribute('driver-type', 'select-item');
-    (currentElement as HTMLElement).style.top = `${top}px`;
-    (currentElement as HTMLElement).style.left = `${left}px`;
-    (currentElement as HTMLElement).style.width = `${width}px`;
-    (currentElement as HTMLElement).style.height = `${height}px`;
-    
+    currentElement.setAttribute('driver-type', 'select-item')
+    currentElement.style.top = `${top}px`
+    currentElement.style.left = `${left}px`
+    currentElement.style.width = `${width}px`
+    currentElement.style.height = `${height}px`
+    currentElement.style.boxSizing = 'border-box';
+
     // 插入占位元素和透明遮罩
     (currentElement.parentNode || document.body).insertBefore(replaceElement, currentElement);
     (currentElement.parentNode || document.body).insertBefore(overlayElement, currentElement);
@@ -99,16 +102,25 @@ const close = () => {
 
 // 初始化 dom
 const initEle = () => {
-  if (currentElement && replaceElement) {
-    (currentElement as HTMLElement).removeAttribute('driver-type');
-    (currentElement as HTMLElement).style.top = (replaceElement as HTMLElement).style.top;
-    (currentElement as HTMLElement).style.right = (replaceElement as HTMLElement).style.right;
-    (currentElement as HTMLElement).style.bottom = (replaceElement as HTMLElement).style.bottom;
-    (currentElement as HTMLElement).style.left = (replaceElement as HTMLElement).style.left;
-    (currentElement as HTMLElement).style.width = '';
-    (currentElement as HTMLElement).style.height = '';
-    currentElement?.parentNode?.removeChild(replaceElement); // 移除 replaceDom
-    currentElement?.parentNode?.removeChild(overlayElement as Node); // 移动透明遮罩
+  if (currentElement && replaceElement && overlayElement) {
+    const { oldWidth = '', oldHeight = '', oldTop = '', oldLeft = '', oldRight = '', oldBottom = '', oldBoxSizing = '' } = currentElement.dataset
+    currentElement.removeAttribute('driver-type');
+    currentElement.style.top = oldTop
+    currentElement.style.right = oldRight 
+    currentElement.style.bottom = oldBottom
+    currentElement.style.left = oldLeft
+    currentElement.style.width = oldWidth
+    currentElement.style.height = oldHeight
+    currentElement.style.boxSizing = oldBoxSizing
+    delete currentElement.dataset.oldTop
+    delete currentElement.dataset.oldRight
+    delete currentElement.dataset.oldBottom
+    delete currentElement.dataset.oldLeft
+    delete currentElement.dataset.oldWidth
+    delete currentElement.dataset.oldHeight
+    delete currentElement.dataset.boxSizing
+    currentElement?.parentNode?.removeChild(replaceElement) // 移除 replaceDom
+    currentElement?.parentNode?.removeChild(overlayElement) // 移动透明遮罩
   }
 }
 const show = () => {

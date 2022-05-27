@@ -9,7 +9,7 @@ const hasViewBox = /(viewBox="[^>+].*?")/g
 
 const clearReturn = /(\r)|(\n)/g
 
-function findSvgFile(dir): string[] {
+const findSvgFile = (dir): string[] => {
   const svgRes = []
   const dirents = readdirSync(dir, {
     withFileTypes: true

@@ -37,11 +37,9 @@ const steps = [
 const toggleStep2 = () => {
   showStep2.value = !showStep2.value
 }
-onMounted(() => {
-  nextTick(() => {
-    driverRef.value?.show()
-  })
-})
+const handleShowDriver = () => {
+  driverRef.value?.show()
+}
 </script>
 
 <template>
@@ -49,9 +47,10 @@ onMounted(() => {
     <img class="block" alt="Vue logo" src="./assets/logo.png" width="200" height="200"/>
   </div>
   <div id="stepParent" class="flex">
-    <div id="step1" class="px-4 py-2 bg-blue-400 text-xs rounded text-white cursor-pointer" @click="toggleStep2">菜单1</div>
-    <div v-show="showStep2" id="step2" class="px-4 py-2 ml-4 bg-red-400 text-xs rounded text-white">菜单2</div>
-    <div id="step3" class="px-4 py-2 ml-4 bg-lime-400 text-xs rounded text-white">菜单3</div>
+    <div id="step1" class="px-4 border-box py-2 bg-blue-400 text-xs rounded text-white cursor-pointer" @click="toggleStep2">菜单1</div>
+    <div v-show="showStep2" id="step2" class="px-4 border-box py-2 ml-4 bg-red-400 text-xs rounded text-white">菜单2</div>
+    <div id="step3" class="px-4 border-box py-2 ml-4 bg-blue-400 text-xs rounded text-white">菜单3</div>
+    <div class="px-4 py-2 ml-4 bg-blue-500 text-xs rounded text-white" @click="handleShowDriver">显示driver</div>
     <Driver ref="driverRef" :steps="steps"></Driver>
   </div>
 </template>
